@@ -1,69 +1,124 @@
-﻿@{
-    ViewBag.Title = "Home Page";
-}
-@section featured {
-    <section class="featured">
-        <div class="content-wrapper">
-            <hgroup class="title">
-                <h1>@ViewBag.Title.</h1>
-                <h2>@ViewBag.Message</h2>
-            </hgroup>
-            <p>
-                To learn more about ASP.NET MVC visit
-                <a href="http://asp.net/mvc" title="ASP.NET MVC Website">http://asp.net/mvc</a>.
-                The page features <mark>videos, tutorials, and samples</mark> to help you get the most from ASP.NET MVC.
-                If you have any questions about ASP.NET MVC visit
-                <a href="http://forums.asp.net/1146.aspx/1?MVC" title="ASP.NET MVC Forum">our forums</a>.
-            </p>
-        </div>
-    </section>
+﻿@using NavigationRoutes
+@{
+    ViewBag.Title = "Shopping List";
 }
 
-    <header>
-        <div class="content-wrapper">
-            <div class="float-left">
-                <p class="site-title">
-                    <a href="~/">Breeze Sample</a>
-                </p>
-            </div>
-        </div>
-    </header>
-    <div id="body">
-        <section id="content" class="content-wrapper main-content">
+<div class="container app" style="display: none;" data-bind="visible: initialized">
 
-            <div data-bind="visible: show" style="display: none">
-                <a href="#" data-bind="click: save">Save</a>&nbsp;
-                    <input type="checkbox" data-bind="checked: includeInactive" />
-                include inactive 
-  
-                    <ul data-bind="foreach: lists">
-                        <li>
-                            <form>
-                                <input type="checkbox" data-bind="checked: Active" />
-                                <input type="text" data-bind="value: Name" />
-                                <br />
-                                <span>Item count:</span><span data-bint="text:Items.length"></span>
-                                <ul data-bind="foreach: Items">
-                                    <li>
-                                        <strong>Name</strong>: <span data-bind="text:Name"></span><br />
-                                        <strong>Amount</strong>: <span data-bind="text:Amount"></span>
-                                    </li>
-                                </ul>
-                            </form>
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <a class="btn pull-right" data-bind="visible: shoppingMode, click: toggleShowBought, css: { 'btn-inverse': showBought() }">
+                    <i class="icon-check icon-white"></i>
+                </a>
+                <a class="brand" href="#" data-bind="with: active">
+                    <span data-bind="text: Name, click: $root.editActive"></span>
+                    @*<span data-bind="text: Name, visible: !$root.editingActive(), click: $root.editActive"></span>*@
+                    @*<input class="brand" type="text" data-bind="value: Name, visible: $root.editingActive(), event: { blur: $root.stopEditingActive }"></input>*@
+                </a>
+                <a href="#" class="btn hidden-phone" data-bind="click: createList"><i class="icon-plus"></i></a>
+                <a class="btn btn-primary" href="#" data-bind="click: save, visible: hasChanges"><i class="icon-ok"></i></a>
+                <a class="btn btn-inverse" href="#" data-bind="click: revert, visible: hasChanges"><i class="icon-refresh"></i></a>
+                <div class="nav-collapse hidden-desktop" data-bind="foreach: lists">
+                    <ul class="nav">
+                        <li data-bind="css: { active: active() }" class="btn-block">
+                            <a href="#" data-bind="click: select" data-toggle="collapse" data-target=".nav-collapse">
+                                <span data-bind="text: Name"></span>&nbsp;<i data-bind="    css: { 'icon-edit': active }" class="pull-right"></i>
+                            </a>
                         </li>
                     </ul>
+                </div>
+                <!--/.nav-collapse -->
             </div>
-
-            <div id="logmessages"></div>
-        </section>
+        </div>
     </div>
-    <!--3rd party library scripts -->
-    <script src="/Scripts/jquery-1.7.1.min.js"></script>
-    <script src="/Scripts/knockout-2.2.0.js"></script>
-    <script src="/Scripts/knockout.mapping-latest.debug.js"></script>
-    <script src="/Scripts/q.js"></script>
-    <script src="/Scripts/breeze.debug.js"></script>
+    <div class="navbar hidden visible-desktop">
+        <div class="navbar-inner">
+            <div class="container">&nbsp;</div>
+        </div>
+    </div>
 
-    <!-- Application scripts -->
-    <script src="/Scripts/app/logger.js"></script>
-    <script src="/Scripts/app/shoppingList.js"></script>
+    <div data-bind="visible: show" style="display: none" class="tabbable tabs-left">
+        <ul class="nav nav-tabs hidden-phone hidden-tablet" data-bind="foreach: lists">
+            <li data-bind="css: { active: active() }" class="btn-navbar">
+                <a href="#" data-bind="click: select">
+                    <span data-bind="text: Name"></span>&nbsp;<i data-bind="    css: { 'icon-edit': active }" class="pull-right icon-list"></i>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content" data-bind="with: active">
+            <ol data-bind="foreach: Items" class="nav nav-tabs nav-stacked shopping-items">
+                <li data-bind="if: (!Bought() || $root.editMode() || $root.showBought())">
+                    <a href="#" class="btn-block">
+                        <strong data-bind="text: Name, click: toggleEditName, visible: !editingName()" class="item-name"></strong>
+                        <input class="input-medium" type="text" data-bind="value: Name, visible: editingName(), event: { blur: toggleEditName }" />
+                        <section class="pull-right">
+                            &nbsp;<span class="btn btn-warning" data-bind="click: toggleBought, css: { 'btn-success': !Bought() }"><i class="icon-check" data-bind="    css: { 'icon-shopping-cart': !Bought(), 'icon-check': Bought() }"></i></span>
+                        </section>
+                        <section class="pull-right" data-bind="if: $root.shoppingMode">
+                            <span class="btn" data-bind="text: AmountFormatted, click: select" style="width: 40px; text-align: right;"></span>
+                        </section>
+                        <section class="pull-right" data-bind="if: $root.editMode">
+                            <span class="btn" data-bind="text: AmountFormatted, click: select" style="width: 40px; text-align: right;"></span>
+                            <span class="btn btn-info" data-bind="click: more"><i class="icon-chevron-up icon-white"></i></span>
+                            <span class="btn btn-info" data-bind="click: less, enable: Amount(), css: { disabled: !Amount() }"><i class="icon-chevron-down icon-white"></i></span>
+                            <span class="btn btn-danger" data-bind="click: remove"><i class="icon-remove icon-white"></i></span>
+                        </section>
+                        <div class="clearfix"></div>
+                    </a>
+                </li>
+            </ol>
+            <button class="btn btn-block" data-bind="click: addItem">+</button>
+            <article data-bind="with: selectedItem, showModal: selectedItem" class="modal hide">
+                <div class="modal-header">
+                    <button type="button" class="close" aria-hidden="true" data-bind="click: deselect">&times;</button>
+                    <h3 data-bind="text: Name"></h3>
+                </div>
+                <form id="selectedItemForm" class="modal-body" data-bind="submit: deselect">
+                    <label class="input-prepend">
+                        <span class="add-on span1">Name</span>
+                        <input type="text" name="Name" data-bind="value: Name" required="required" />
+                        <p class="error" data-bind="validationMessage: Name"></p>
+                    </label>
+                    <label class="input-prepend">
+                        <span class="add-on span1">Amount</span>
+                        <input type="number" name="Amount" data-bind="value: Amount" min="0" />
+                        <p class="error" data-bind="validationMessage: Amount"></p>
+                    </label>
+                    <label class="input-prepend">
+                        <span class="add-on span1">Unit</span>
+                        <input type="text" name="Unit" data-bind="value: Unit" />
+                        <p class="error" data-bind="validationMessage: Unit"></p>
+                    </label>
+                    <input type="submit" value="submit" class="invisible" />
+                </form>
+                <div class="modal-footer">
+                    <a href="#" class="btn" data-bind="click: deselect">Back</a>
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <article data-bind="with: active, showModal: $root.editingActive" class="modal hide">
+        <div class="modal-header">
+            <button type="button" class="close" aria-hidden="true" data-bind="click: $root.stopEditingActive">&times;</button>
+            <h3 data-bind="text: Name"></h3>
+        </div>
+        <form id="activeListForm" class="modal-body" data-bind="submit: $root.stopEditingActive">
+            <label class="input-prepend">
+                <span class="add-on span1">Name</span>
+                <input type="text" name="Name" data-bind="value: Name" required="required" />
+                <p class="error" data-bind="validationMessage: Name"></p>
+            </label>
+            <input type="submit" value="submit" class="invisible" />
+        </form>
+        <div class="modal-footer">
+            <a href="#" class="btn" data-bind="click: $root.stopEditingActive">Back</a>
+        </div>
+    </article>
+</div>

@@ -5,31 +5,6 @@ using System.Web;
 
 namespace ShoppingList.Web.Models
 {
-    /// <summary>
-    /// unit
-    /// </summary>
-    public class Unit
-    {
-        /// <summary>
-        /// Gets or sets the id.
-        /// </summary>
-        /// <value>The id.</value>
-        public int Id
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets or sets the name.
-        /// </summary>
-        /// <value>The name.</value>
-        public string Name
-        {
-            get;
-            set;
-        } 
-    }
 
     public class ShoppingList
     {
@@ -92,7 +67,7 @@ namespace ShoppingList.Web.Models
         {
             get;
             set;
-        } 
+        }
     }
 
     /// <summary>
@@ -110,25 +85,24 @@ namespace ShoppingList.Web.Models
             set;
         }
 
-        ///// <summary>
-        ///// Gets or sets the parent list id.
-        ///// </summary>
-        ///// <value>The parent list id.</value>
-        //public int ParentList_Id
-        //{
-        //    get;
-        //    set;
-        //} 
 
         /// <summary>
         /// Gets or sets the parent list.
         /// </summary>
         /// <value>The parent list.</value>
-        public virtual ShoppingList ParentList
+        public virtual ShoppingList ShoppingList
         {
             get;
             set;
         }
+
+        /// <summary>
+        /// Gets or sets the parent list id.
+        /// </summary>
+        /// <value>
+        /// The parent list id.
+        /// </value>
+        public int ShoppingList_Id { get; set; }
 
         /// <summary>
         /// Gets or sets the name.
@@ -164,7 +138,7 @@ namespace ShoppingList.Web.Models
         /// Gets or sets the unit.
         /// </summary>
         /// <value>The unit.</value>
-        public Unit Unit
+        public string Unit
         {
             get;
             set;

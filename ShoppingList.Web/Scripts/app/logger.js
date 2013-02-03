@@ -1,37 +1,42 @@
 ﻿(function (exports) {
     var app = exports.app = exports.app || {};
-    var logCounter = 1;
-    var logger = {
+    // This logger wraps the toastr logger and also logs to console
+    // toastr.js is library by John Papa that shows messages in pop up toast.
+    // https://github.com/CodeSeven/toastr
+
+    toastr.options.timeOut = 2000; // 2 second toast timeout
+    toastr.options.positionClass = 'toast-bottom-right';
+
+    app.logger = {
         error: error,
-        validationError: validationError,
         info: info,
         success: success,
-        warning: warning
+        warning: warning,
+        log: log // straight to console; bypass toast
     };
 
-    function error(message) {
-        log("log-error", message);
+    function error(message, title) {
+        toastr.error(message, title);
+        log("Error: " + message);
     };
-    function validationError(message) {
-        log("log-validation-error",message);
+    function info(message, title) {
+        toastr.info(message, title);
+        log("Info: " + message);
     };
-    function info(message) {
-        log("log-info", message);
+    function success(message, title) {
+        toastr.success(message, title);
+        log("Success: " + message);
     };
-    function success(message) {
-        log("log-success", message);
-    };
-    function warning(message) {
-        log("log-warning", message);
+    function warning(message, title) {
+        toastr.warning(message, title);
+        log("Warning: " + message);
     };
 
-
-    function log(cssClass, message) {
-        var logmessage = "<div class='" + cssClass + "'>" +
-            logCounter++ + ": " + message + "</div>";
-        $("#logmessages").append(logmessage);
+    // IE and google chrome workaround
+    // http://code.google.com/p/chromium/issues/detail?id=48662
+    function log() {
+        var console = window.console;
+        !!console && console.log && console.log.apply && console.log.apply(console, arguments);
     }
-
-    app.logger = logger;
 
 }(window));

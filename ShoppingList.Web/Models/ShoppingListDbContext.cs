@@ -13,12 +13,19 @@ namespace ShoppingList.Web.Models
             Database.SetInitializer<ŞhoppingListDbContext>(new MigrateDatabaseToLatestVersion<ŞhoppingListDbContext, Configurations.ShoppingListMigrator>());
         }
 
+        public ŞhoppingListDbContext() :
+            base("name=DefaultConnection")
+        {
+            
+        }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Configurations.Add(new Configurations.ShoppingListConfiguration());
             modelBuilder.Configurations.Add(new Configurations.ShoppingListItemConfiguration());
+            //modelBuilder.Configurations.Add(new Configurations.UnitConfiguration());
         }
 
         public DbSet<ShoppingList> ShoppingList { get; set; }
@@ -39,37 +46,6 @@ namespace ShoppingList.Web.Models
                 protected override void Seed(ŞhoppingListDbContext context)
                 {
                     base.Seed(context);
-
-                    var shoppingList = new ShoppingList()
-                    {
-                        Name = "Sample list",
-                        SecretUrl = "SampleList",
-                        Active = true,
-                        Items = new List<Item>()
-                        {
-                            new Item()
-                            {
-                             Name="Eggs",
-                             Amount = 18,
-                             Unit = new Unit(){ Name="piece"}
-                            },
-                           new Item()
-                            {
-                             Name="Milk",
-                             Amount = 8,
-                             Unit = new Unit(){ Name="liter"}
-                            },
-                            new Item()
-                            {
-                                Name="Cheese",
-                                Amount=0.3M,
-                                Unit = new Unit(){ Name="kg"}
-                            }
-                        }
-                    };
-
-                    context.Set<ShoppingList>().Add(shoppingList);
-                    context.SaveChanges();
                 }
             }
 
@@ -82,7 +58,8 @@ namespace ShoppingList.Web.Models
                 {
                     this.HasKey(p => p.Id);
                     this.HasMany(p => p.Items)
-                        .WithRequired(i => i.ParentList);
+                        .WithRequired(i => i.ShoppingList)
+                        .HasForeignKey(i => i.ShoppingList_Id);
                 }
             }
 
@@ -94,21 +71,19 @@ namespace ShoppingList.Web.Models
                 public ShoppingListItemConfiguration()
                 {
                     this.HasKey(t => t.Id);
-                    this.HasRequired(t => t.Unit)
-                        .WithMany();
                 }
             }
 
-            public class UnitConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Unit>
-            {
-                /// <summary>
-                /// Initializes a new instance of the <see cref="T:UnitConfiguration"/> class.
-                /// </summary>
-                public UnitConfiguration()
-                {
-                    this.HasKey(t => t.Id);
-                }
-            }
+            //public class UnitConfiguration : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Unit>
+            //{
+            //    /// <summary>
+            //    /// Initializes a new instance of the <see cref="T:UnitConfiguration"/> class.
+            //    /// </summary>
+            //    public UnitConfiguration()
+            //    {
+            //        this.HasKey(t => t.Id);
+            //    }
+            //}
         }
     }
 }
