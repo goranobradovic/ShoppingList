@@ -21,7 +21,7 @@ namespace ShoppingList.Web
                 "~/Scripts/q*",
                 "~/Scripts/breeze*",
                 "~/Scripts/toastr*",
-                "~/Scripts/sugar-full.min.js",
+                "~/Scripts/sugar-full.*",
                 "~/Scripts/jquery.validate.js",
                 "~/scripts/jquery.validate.unobtrusive.js",
                 "~/Scripts/jquery.validate.unobtrusive-custom-for-bootstrap.js"

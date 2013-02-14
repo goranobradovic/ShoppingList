@@ -30,6 +30,8 @@ namespace ShoppingList.Web.Models
 
         public DbSet<ShoppingList> ShoppingList { get; set; }
 
+        public DbSet<UserProfile> UserProfiles { get; set; }
+
         public class Configurations
         {
             public class ShoppingListMigrator : System.Data.Entity.Migrations.DbMigrationsConfiguration<ŞhoppingListDbContext>
