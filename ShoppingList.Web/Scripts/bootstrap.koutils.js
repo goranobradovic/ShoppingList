@@ -23,7 +23,7 @@
 			},
 			update: function (element, valueAccessor) {
 				var value = valueAccessor();
-				if (value()) {
+				if (ko.utils.unwrapObservable(value)) {
 					$(element).modal('show');
 					$("input", element).focus();
 				}
