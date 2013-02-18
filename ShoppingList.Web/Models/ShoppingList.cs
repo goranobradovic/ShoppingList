@@ -33,7 +33,7 @@ namespace ShoppingList.Web.Models
         /// Gets or sets the owner.
         /// </summary>
         /// <value>The owner.</value>
-        public string Owner
+        public UserProfile Owner
         {
             get;
             set;
@@ -144,4 +144,5 @@ namespace ShoppingList.Web.Models
             set;
         }
     }
+
 }

@@ -25,8 +25,9 @@ namespace ShoppingList.Web
                 "~/Scripts/jquery.validate.js",
                 "~/scripts/jquery.validate.unobtrusive.js",
                 "~/Scripts/jquery.validate.unobtrusive-custom-for-bootstrap.js"
-                ).IncludeDirectory("~/Scripts/app", "*.js")
-                );
+                ));
+
+            bundles.Add(new ScriptBundle("~/js/app").IncludeDirectory("~/Scripts/app", "*.js"));
 
             var less = new StyleBundle("~/content/css").Include(
                 "~/Content/Site.less"

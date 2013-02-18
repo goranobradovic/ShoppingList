@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Transactions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using DotNetOpenAuth.AspNet;
 using Microsoft.Web.WebPages.OAuth;
+using ShoppingList.Web.Helpers;
 using WebMatrix.WebData;
 using ShoppingList.Web.Models;
+using log4net;
 
 namespace ShoppingList.Web.Controllers
 {
@@ -21,6 +24,7 @@ namespace ShoppingList.Web.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+            return new ExternalLoginResult("facebook", Url.Action("ExternalLoginCallback", new { ReturnUrl = returnUrl }));
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -221,8 +225,11 @@ namespace ShoppingList.Web.Controllers
                 return RedirectToAction("ExternalLoginFailure");
             }
 
+            Session[Oauth.FieldNames.AccessToken] = result.ExtraData.ReadField(Oauth.FieldNames.AccessToken);
+
             if (OAuthWebSecurity.Login(result.Provider, result.ProviderUserId, createPersistentCookie: false))
             {
+                Oauth.UpdateUserAsync(result);
                 return RedirectToLocal(returnUrl);
             }
 
@@ -261,7 +268,7 @@ namespace ShoppingList.Web.Controllers
             if (ModelState.IsValid)
             {
                 // Insert a new user into the database
-                using (var db = new ŞhoppingListDbContext())
+                using (var db = new ShoppingListDbContext())
                 {
                     UserProfile user = db.UserProfiles.FirstOrDefault(u => u.UserName.ToLower() == model.UserName.ToLower());
                     // Check if user already exists

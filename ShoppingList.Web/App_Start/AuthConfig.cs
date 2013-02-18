@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Web.WebPages.OAuth;
+using ShoppingList.Web.Helpers;
 using ShoppingList.Web.Models;
 using WebMatrix.WebData;
 
@@ -12,10 +13,10 @@ namespace ShoppingList.Web
     {
         public static void RegisterAuth()
         {
-            var db = new ŞhoppingListDbContext();
+            var db = new ShoppingListDbContext();
             db.Database.Initialize(false);
 
-            WebSecurity.InitializeDatabaseConnection("DefaultConnection", "UserProfile", "UserId", "UserName", autoCreateTables: true);
+            WebSecurity.InitializeDatabaseConnection("DefaultConnection", typeof(UserProfile).Name, "UserId", "UserName", autoCreateTables: true);
             // To let users of this site log in using their accounts from other sites such as Microsoft, Facebook, and Twitter,
             // you must update this site. For more information visit http://go.microsoft.com/fwlink/?LinkID=252166
 
@@ -28,8 +29,8 @@ namespace ShoppingList.Web
             //    consumerSecret: "");
 
             OAuthWebSecurity.RegisterFacebookClient(
-                appId: "193276167373459",
-                appSecret: "d0ab63af612cc52e9dcd5c774deb2b16");
+                appId: Oauth.FbAppId,
+                appSecret: Oauth.FbAppSecret);
 
             OAuthWebSecurity.RegisterGoogleClient();
         }

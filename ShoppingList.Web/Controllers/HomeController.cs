@@ -1,33 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Net.Mime;
 using System.Web.Mvc;
+using Microsoft.Web.WebPages.OAuth;
+using Newtonsoft.Json;
+using ShoppingList.Web.Helpers;
+using ShoppingList.Web.Models;
 
 namespace ShoppingList.Web.Controllers
 {
     public class HomeController : Controller
     {
         [Authorize]
-        public ActionResult Index()
+        public ActionResult Index(string request_ids)
         {
-            ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
-
             return View();
         }
 
-        public ActionResult About()
+        [Authorize]
+        public ActionResult GetFbData(string id = "me")
         {
-            ViewBag.Message = "Your app description page.";
+            var fb = Oauth.GetUserFacebookClient();
 
-            return View();
-        }
+            var test = fb.Get(id);
+            return Content(JsonConvert.SerializeObject(test), "application/json");
+            
+            return Json(test, JsonRequestBehavior.AllowGet);
 
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
         }
     }
 }

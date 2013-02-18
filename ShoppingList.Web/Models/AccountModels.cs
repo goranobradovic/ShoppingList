@@ -8,13 +8,24 @@ using System.Web.Security;
 
 namespace ShoppingList.Web.Models
 {
-    [Table("UserProfile")]
+    [Table("UserProfile", Schema = "shopper")]
     public class UserProfile
     {
         [Key]
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int UserId { get; set; }
+
         public string UserName { get; set; }
+
+        public string Name { get; set; }
+
+        public string Gender { get; set; }
+
+        public string AccessToken { get; set; }
+
+        public string PictureUrl { get; set; }
+
+        public virtual ICollection<ShoppingList> ShoppingLists { get; set; }
     }
 
     public class RegisterExternalLoginModel

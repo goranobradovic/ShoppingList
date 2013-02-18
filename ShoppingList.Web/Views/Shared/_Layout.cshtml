@@ -14,14 +14,15 @@
     @Html.Partial("_html5shiv")
     @* favicons and touch icons go here *@
 </head>
-<body>
-    @Html.Partial("_alerts")
-    @RenderBody()
-    <footer>
-        @*                <p>&copy; Company 2012</p>*@
-    </footer>
-    @Scripts.Render("~/js")
-    @RenderSection("Scripts", required: false)
-</body>
+    <body>
+        @Html.Partial("_fb")
+        @Html.Partial("_alerts")
+        @RenderBody()
+        <footer class="hidden-phone navbar-fixed-bottom">
+            &copy; <a href="https://twitter.com/goranobradovic">@@goranobradovic</a> 2013
+        </footer>
+        @Scripts.Render("~/js")
+        @RenderSection("Scripts", required: false)
+    </body>
 </html>
 
