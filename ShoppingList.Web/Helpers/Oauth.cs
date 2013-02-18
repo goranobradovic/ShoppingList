@@ -5,8 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using DotNetOpenAuth.AspNet;
-using Facebook;
 using ShoppingList.Web.Models;
+using Facebook;
 using log4net;
 
 namespace ShoppingList.Web.Helpers

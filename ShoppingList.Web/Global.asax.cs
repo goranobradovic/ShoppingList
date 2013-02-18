@@ -6,8 +6,6 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using Microsoft.Web.WebPages.OAuth;
-using ShoppingList.Web.Helpers;
 using log4net;
 
 namespace ShoppingList.Web
@@ -17,7 +15,6 @@ namespace ShoppingList.Web
 
     public class ShoppingListApp : System.Web.HttpApplication
     {
-
         private readonly ILog _logger = LogManager.GetLogger(typeof(ShoppingListApp));
         private static string _host = null;
 
@@ -25,8 +22,6 @@ namespace ShoppingList.Web
         {
             log4net.Config.XmlConfigurator.Configure();
         }
-
-
 
         protected void Application_Start()
         {
@@ -41,8 +36,13 @@ namespace ShoppingList.Web
             //BootstrapSupport.BootstrapBundleConfig.RegisterBundles(System.Web.Optimization.BundleTable.Bundles);
             BootstrapMvcSample.ExampleLayoutsRouteConfig.RegisterRoutes(RouteTable.Routes);
 
-            this.Error += ShoppingListApp_Error;
+            //this.Error += Application_Error;
 
+            //StartPing();
+        }
+
+        private void StartPing()
+        {
             var t = new Timer(delegate
                 {
                     try
@@ -61,13 +61,7 @@ namespace ShoppingList.Web
             t.Change(TimeSpan.FromSeconds(300), TimeSpan.FromSeconds(300));
         }
 
-        void ShoppingListApp_Error(object sender, EventArgs e)
-        {
-            var ex = Server.GetLastError();
-            _logger.Fatal(ex);
-        }
-
-        void Application_BeginRequest(Object source, EventArgs e)
+        private void Application_BeginRequest(Object source, EventArgs e)
         {
             if (string.IsNullOrEmpty(_host))
             {
@@ -79,8 +73,12 @@ namespace ShoppingList.Web
                     url.Port,
                     UrlHelper.GenerateContentUrl("~", HttpContext.Current.Request.RequestContext.HttpContext));
             }
-
         }
 
+        private void Application_Error(object sender, EventArgs e)
+        {
+            var ex = Server.GetLastError();
+            _logger.Fatal(ex);
+        }
     }
 }
